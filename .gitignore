@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Uploaded content and user-generated data
+uploads/
+testDirectory/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor and IDE settings
+.vscode/
+.idea/
+
+# Temporary files
+tmp/
+temp/
