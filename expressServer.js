@@ -9,6 +9,8 @@ const textFile = path.join(uploadDir, 'texts.txt');
 
 const server = express();
 
+server.use(express.static(path.join(__dirname, 'public')));
+
 // GET endpoint for /text url
 server.get('/text', (req, res) => {
     if (!fs.existsSync(textFile)) {

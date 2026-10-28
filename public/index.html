@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+        <title>Simple Node.js Server</title>
+        
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 700px;
+                margin: 40px auto;
+                padding: 0 20px;
+                background: #c6c3c3;
+                color: #222;
+            }
+            section {
+                background: rgb(235, 232, 232);
+                padding: 20px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+            }
+            button, input {
+                padding: 9px;
+                margin: 5px 0;
+            }
+            img {
+                display: block;
+                max-width: 100%;
+                max-height: 350px;
+                margin-top: 15px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Simple Node.js Server</h1>
+        <p>Interact with the server using its API endpoints</p>
+
+        <section>
+            <h2>Random image</h2>
+            <button id="getImageButton">Get random image</button>
+            <div id="imageResultField"></div>
+        </section>
+
+        <section>
+            <h2>Upload image</h2>
+            <form id="imageForm">
+                <input type="file" id="imageFileInput" accept="image/png" required>
+                <br>
+                <button type="submit">Upload image</button>
+            </form>
+            <p id="imageStatus"></p>
+        </section>
+
+        <section>
+            <h2>Random text</h2>
+            <button id="getTextButton">Get random text</button>
+            <p id="randomMessageField"></p>
+        </section>
+
+        <section>
+            <h2>Send text</h2>
+            <form id="textForm">
+                <input type="text" id="textInput" placeholder="Enter a message" required>
+                <br>
+                <button type="submit">Send text</button>
+            </form>
+            <p id="textStatus"></p>
+        </section>
+    </body>
+    <script>
+        // GET image
+        document.getElementById('getImageButton').addEventListener('click', () => {
+            const image = document.createElement('img');
+
+            image.src = '/image?t=' + Date.now();
+            image.alt = 'Random image from the server';
+
+            const result = document.getElementById('imageResultField');
+            result.replaceChildren(image);
+
+            image.onerror = () => {
+                result.textContent = "Could not load an image.";
+            };
+        });
+
+        // POST image
+        document.getElementById('imageForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const file = document.getElementById('imageFileInput').files[0];
+            const status = document.getElementById('imageStatus');
+
+            if (!file) return;
+
+            if (file.type !== 'image/png') {
+                status.textContent = 'Please select a PNG image.';
+                return;
+            }
+
+            try {
+                const response = await fetch('/image', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'image/png' },
+                    body: file
+                });
+
+                status.textContent = await response.text();
+            } catch {
+                status.textContent = 'Could not connect to the server.';
+            }
+        });
+
+        // GET text
+        document.getElementById('getTextButton').addEventListener('click', async () => {
+            const message = document.getElementById('randomMessageField');
+
+            try {
+                const response = await fetch('/text');
+                message.textContent = await response.text();
+            } catch {
+                message.textContent = "Could not connect to the server.";
+            }
+        });
+
+        // POST text
+        document.getElementById('textForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const input = document.getElementById('textInput');
+            const status = document.getElementById('textStatus');
+
+            try {
+                const response = await fetch('/text', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: input.value
+                });
+
+                status.textContent = await response.text();
+
+                if (response.ok) {
+                    input.value = "";
+                }
+            } catch {
+                status.textContent = "Could not connect to the server.";
+            }
+        });
+    </script>
+</html>
