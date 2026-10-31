@@ -58,6 +58,32 @@ function saveImage(buffer) {
     return filename;
 }
 
+function renameImage(filename, newname) {
+    const oldPath = getImagePath(filename);
+
+    if (!oldPath) {
+        return false;
+    }
+
+    console.log(`Renaming ${oldPath} to ${newname}`);
+    const safeName = path.basename(newname, '.png').replace('/[^\w-]/g', '');
+
+    if (!safeName) {
+        throw new Error('Invalid image name.');
+    }
+
+    const newFilename = `${newname}.png`;
+    const newPath = path.join(uploadDir, newFilename);
+
+    if (fs.existsSync(newPath)) {
+        throw new Error('An image with that name already exists.');
+    }
+
+    fs.renameSync(oldPath, newPath);
+
+    return newFilename;
+}
+
 function deleteImage(filename) {
     const imagePath = getImagePath(filename);
 
@@ -73,5 +99,6 @@ module.exports = {
     getAllImages,
     getImagePath,
     saveImage,
+    renameImage,
     deleteImage
 };

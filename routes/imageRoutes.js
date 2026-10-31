@@ -21,7 +21,7 @@ server.get('/image', (req, res) => {
 });
 
 // GET endpoint for fetching a specific image
-server.get('/image/:filename', (req, res) => {
+server.get('/images/:filename', (req, res) => {
     try {
         const filename = req.params.filename;
         const imagePath = imageService.getImagePath(filename);
@@ -49,7 +49,7 @@ server.get('/images', (req, res) => {
 });
 
 // POST endpoint
-server.post('/image', express.raw({ type: ['image/png', 'application/octet-stream'], limit: '5mb' }), (req, res) => {
+server.post('/images', express.raw({ type: ['image/png', 'application/octet-stream'], limit: '5mb' }), (req, res) => {
     try {
         const filename = imageService.saveImage(req.body);
 
@@ -60,8 +60,27 @@ server.post('/image', express.raw({ type: ['image/png', 'application/octet-strea
     }
 });
 
+// PUT endpoint (renames an image)
+server.put('/images/:filename', (req, res) => {
+    try {
+        const filename = req.params.filename;
+        const newName = req.body.text;
+
+        const renamed = imageService.renameImage(filename, newName);
+
+        if (!renamed) {
+            return res.status(404).json({ error: 'Image not found.' });
+        }
+
+        res.json({ message: 'Image renamed.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Could not update image.' });
+    }
+});
+
 // DELETE endpoint
-server.delete('/image/:filename', (req, res) => {
+server.delete('/images/:filename', (req, res) => {
     try {
         const deleted = imageService.deleteImage(req.params.filename);
 

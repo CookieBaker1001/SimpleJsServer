@@ -10,26 +10,30 @@ const server = express();
 // Middleware
 server.use(express.json());
 server.use(express.static(path.join(__dirname, 'public')));
+server.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+});
 
 server.use('/', imageRoutes);
 server.use('/', textRoutes);
 
 // index url
 server.get('', (req, res) => {
-    console.log('Response type:', res.constructor.name);
-    console.log('res.status:', typeof res.status);
+    console.log('[Server] Response type:', res.constructor.name);
+    console.log('[Server] res.status:', typeof res.status);
 
     res.status(200).send("Hello world!");
 });
 
 // Any endpoints that aren't defined
 server.use((req, res) => {
-    res.status(404).send("Page not found!");
+    res.status(404).json("[Server] Page not found! Req-data:");
 });
 
 // Start listening
 server.listen(PORT, () => {
-    console.log("Sevrer is listening on port", PORT);
+    console.log("[Server] Server is listening on port", PORT);
 });
 
 

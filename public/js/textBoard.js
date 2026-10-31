@@ -24,10 +24,7 @@ window.textBoard = (() => {
             }
 
             for (const entry of texts) {
-
                 createTextCard(entry, board);
-
-                
             }
         } catch (error) {
             console.error(error);
@@ -52,7 +49,6 @@ window.textBoard = (() => {
         // Edit button
         const editButton = document.createElement('button');
         editButton.textContent = 'Edit';
-
         editButton.addEventListener('click', () => {
             editText(entry);
         });
@@ -60,13 +56,11 @@ window.textBoard = (() => {
         // Delete button
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
-
         deleteButton.addEventListener('click', () => {
             deleteText(entry.id);
         });
 
         buttons.append(editButton, deleteButton);
-
         card.append(content, date, buttons);
         board.appendChild(card);
     }
