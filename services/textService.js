@@ -19,7 +19,7 @@ function initializeStorage() {
     }
 
     if (!fs.existsSync(textFilePath)) {
-        fs.writeFileSync(textFilePath, '[]', 'uft8');
+        fs.writeFileSync(textFilePath, '[]', 'utf8');
     }
 }
 

@@ -4,7 +4,7 @@ const path = require('path');
 const imageRoutes = require('./routes/imageRoutes');
 const textRoutes = require('./routes/textRoutes');
 
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 const server = express();
 
 // Middleware
@@ -32,42 +32,6 @@ server.use((req, res) => {
 });
 
 // Start listening
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
     console.log("[Server] Server is listening on port", PORT);
 });
-
-
-
-function readTexts() {
-    if (!fs.existsSync(textsJsonFile)) {
-        // Migrate existing entries from texts.txt on first run.
-        const oldTextFile = path.join(uploadDir, 'texts.txt');
-
-        let oldEntries = [];
-
-        if (fs.existsSync(oldTextFile)) {
-            oldEntries = fs.readFileSync(oldTextFile, 'utf8')
-                .split(/\r?\n/)
-                .filter(text => text.trim() !== '');
-        }
-
-        const texts = oldEntries.map(text => ({
-            id: crypto.randomUUID(),
-            text,
-            createdAt: new Date().toISOString()
-        }));
-
-        writeTexts(texts);
-        return texts;
-    }
-
-    return JSON.parse(fs.readFileSync(textsJsonFile, 'utf8'));
-}
-
-function writeTexts(texts) {
-    fs.writeFileSync(
-        textsJsonFile,
-        JSON.stringify(texts, null, 2),
-        'utf8'
-    );
-}
