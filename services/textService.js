@@ -92,16 +92,22 @@ function updateText(id, text) {
 
 // Delete an existing text entry.
 function deleteText(id) {
+    console.log("Deleting text with id:", id);
     const texts = getTexts();
-    const index = texts.filter(item => item.id !== id);
+    
+    let index;
+    for (let i = 0; i < texts.length; i++) {
+        if (texts[i].id == id) {
+            index = i;
+            break;
+        }
+    }
+
+    console.log("At index", index);
 
     if (index === -1) {
         return false;
     }
-
-    // if (remaining.length === texts.length) {
-    //     throw createError('Text not found.', 404);
-    // }
 
     texts.splice(index, 1);
     saveTexts(texts);

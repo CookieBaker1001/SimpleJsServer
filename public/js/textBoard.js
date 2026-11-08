@@ -116,6 +116,7 @@ window.textBoard = (() => {
     }
 
     async function deleteText(id) {
+        console.log("ID:", id);
         if (!confirm('Are you sure you want to delete this entry?')) {
             return;
         }
